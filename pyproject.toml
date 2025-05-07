@@ -9,7 +9,10 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.10, <4.0"
 dependencies = [
-    "process-bigraph (>=0.0.35)"
+    "process-bigraph (>=0.0.35, <1.0)",
+    "typer (>=0.15.3, <1.0)",
+    "process-bigraph-lang @ git+https://github.com/biosimulations/process-bigraph-lang.git",
+    "spatio-flux @ git+https://github.com/vivarium-collective/spatio-flux.git"
 ]
 
 [tool.poetry]
