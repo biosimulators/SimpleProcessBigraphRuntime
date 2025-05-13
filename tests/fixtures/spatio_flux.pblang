@@ -11,6 +11,18 @@ type string builtin
 def update_float_unsigned(a, b): ReLU(a + b);
 type positive_float extends float update update_float_unsigned
 
+type substrates
+    glucose: positive_float
+    acetate: positive_float
+    biomass: positive_float
+
+// type float_array: array[positive_float, (4,4)]
+// type field
+//     glucose: float_array
+//     acetate: float_array
+//     biomass: float_array
+
+
 type bounds
     lower: maybe[float]
     upper: maybe[float]
@@ -38,12 +50,24 @@ type reaction_type builtin // 'map[kinetics]'
 
 // my model
 type concentration extends float default 1.0
+
+
 def my_update(substrate, rate, interval): substrate + rate * interval;
 unit uM_per_h: ["10e-6 mole/liter/h"]
 unit uM: ["10e-6 mole/liter"]
 unit conc: uM_per_h
 unit hour: ["h"]
 unit dimensionless: ["1"]
+
+
+process_def dfba path jdfkljfaldjflkasjdf
+
+
+    var substrate_var: substrates
+
+    inputs substrate_var
+    outputs substrate_var 
+
 
 process_def MyProcess
     param calcium_growth: float default 0.1 [uM_per_h]
@@ -61,19 +85,9 @@ process_def MyProcess
         glucose := my_update(glucose, glucose_growth, dt);
         calcium := calcium * (1-exp(dt)) + alpha * calcium_growth * dt;
 
-store medium
-    state glucose: float default 3.0 [uM]
-    state calcium: float default 0.5
 
-store cell parent medium
-    state glucose: float default 0.0
-    state calcium: float default 0.0
+store_def dfba_substrates_input_output
+    state_def substr: substrates
 
-store nucleus parent cell
-    state glucose: float default 0.0
-    state calcium: float default 0.0
 
 composite_def CellComposite
-    stores cell nucleus
-    process p1: MyProcess stores cell
-    process p2: MyProcess stores nucleus

@@ -1,44 +1,30 @@
+// my model
+type float builtin
 
-type float default 0.0
-def exp(a): builtin
-type concentration extends float default 1.0
+process_def add_nums path toy.AddFloatsRepeatedly
+    var left_hand_addend: float
+    var right_hand_addend: float
+    var result: float
+    inputs left_hand_addend right_hand_addend
+    outputs result
 
-def my_update(substrate, rate, interval): substrate + rate * interval;
+process_def print_result path toy.SaveFloatToFileRepeatedly
+    //param output_file_path: string default "~/result.txt"
+    var result: float
+    inputs result
 
-unit uM_per_h: ["10e-6 mole/liter/h"]
-unit uM: ["10e-6 mole/liter"]
-unit conc: uM_per_h
-unit hour: ["h"]
-unit dimensionless: ["1"]
+store_def left_hand
+    state_def left_hand_addend: float default 2.07
 
-process_def MyProcess
-    param calcium_growth: float default 0.1 [uM_per_h]
-    param glucose_growth: float default 0.1 [uM_per_h]
-    param dt: float default 0.1 [hour]
-    param alpha: float default 0.1 [dimensionless]
+store_def right_hand
+    state_def right_hand_addend: float default 3.5
 
-    var glucose: float
-    var calcium: float [conc]
-
-    inputs glucose calcium
-    outputs glucose calcium
-
-    updates
-        glucose := my_update(glucose, glucose_growth, dt);
-        calcium := calcium * (1-exp(dt)) + alpha * calcium_growth * dt;
-
-store cell
-    state glucose: float default 3.0
-    state calcium: float default 0.0
-
-store membrane
-    state glucose: float default 3.0
-    state calcium: float default 0.0
-
+store_def resulting_calculation
+    state_def result: float
 
 composite_def CellComposite
-    stores cell
-    process p1: MyProcess stores cell membrane
-
-
-
+    store lhs: left_hand
+    store rhs: right_hand
+    store res: resulting_calculation
+    process addition: add_nums stores lhs rhs res
+    process printing: print_result stores res

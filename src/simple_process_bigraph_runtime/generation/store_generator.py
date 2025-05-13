@@ -1,6 +1,7 @@
 import warnings
-
-from process_bigraph_lang.dsl.model import Model
+from typing import Any
+from process_bigraph_lang.dsl.model import Model, Store
+from vivarium import Vivarium
 
 with warnings.catch_warnings(): # Temporary minimal_impact bug in process_bigraphs
     warnings.simplefilter("ignore", SyntaxWarning)
@@ -8,8 +9,8 @@ with warnings.catch_warnings(): # Temporary minimal_impact bug in process_bigrap
     from process_bigraph import ProcessTypes
 
 
-def collect_stores(model: Model):
+def collect_stores(model: Model) -> tuple[list[Store], Any]:
     pass
 
-def register_stores(core: ProcessTypes) -> None:
+def register_stores(assembler: Vivarium, stores_to_register: list[Store]) -> None:
     pass

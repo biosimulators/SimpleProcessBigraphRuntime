@@ -1,1 +1,1 @@
-from registry import standard_processes
+from registry import spatio_flux_library
