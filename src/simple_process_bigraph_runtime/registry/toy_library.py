@@ -70,8 +70,9 @@ class SaveFloatToFileRepeatedly(Process):
         }
 
     def update(self, state, interval):
+        value = str(state["result"])
         with open(os.path.expanduser("~/Documents/pb_output_dir/output_value.txt"), "w+") as f:
-            f.write(str(state["result"]))
+            f.write(value)
 
 class AddComplexNumbers(Step):
     def inputs(self):

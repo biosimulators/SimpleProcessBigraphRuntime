@@ -49,6 +49,7 @@ def execute(duration: float, pblang_path: Annotated[str, typer.Argument(help="Pa
     pb_composite, _0, _1 = performConversion(ast_model)
 
     pb_composite.run(duration)
+    print("Execution complete")
 
 @app.command()
 def playground():

@@ -8,8 +8,8 @@ process_def add_nums path toy.AddFloatsRepeatedly
     inputs left_hand_addend right_hand_addend
     outputs result
 
-process_def print_result path toy.SaveFloatToFileRepeatedly
-    //param output_file_path: string default "~/result.txt"
+process_def print_result path toy.SaveFloatToFile
+    //param output_file_path: string default "~/abc_result.txt"
     var result: float
     inputs result
 

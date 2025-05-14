@@ -28,14 +28,16 @@ def process_composite(model: Model, assembler: Vivarium):
             full, section, _, index = match_obj.groups()
             if section != "processDefs":
                 raise ValueError(f"Unexpected section `{section}` for reference `{process.process_def.ref_text}` ({full})`")
-            # create config
-            config = {}
-            # for param in process.config:
-            #     pass
+
             # Identify ports needing to be bound
             process_def_actual: ProcessDef = model.processDefs[int(index)]
             input_bindings: dict[str, list[str]] = {elem.ref_text : [] for elem in process_def_actual.inputs}
             output_bindings: dict[str, list[str]] = {elem.ref_text : [] for elem in process_def_actual.outputs}
+
+            # create config
+            # config = {}
+            # for param in process_def_actual.params:
+            #     config[param.name] = param.default.val if param.default is not None else determine_builtin_default(param.type.ref_text)
 
             # store validation
             store_ref: Reference
@@ -64,7 +66,7 @@ def process_composite(model: Model, assembler: Vivarium):
             assembler.add_process(
                 name=process.name,
                 process_id=".".join(process_def_actual.python_path.path),
-                #config={???},
+                # config=config,
                 inputs=input_bindings,
                 outputs=output_bindings,
             )
