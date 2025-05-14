@@ -1,5 +1,6 @@
 // my model
 type float builtin
+type string builtin
 
 process_def add_nums path toy.AddFloatsRepeatedly
     var left_hand_addend: float
@@ -9,7 +10,7 @@ process_def add_nums path toy.AddFloatsRepeatedly
     outputs result
 
 process_def print_result path toy.SaveFloatToFile
-    //param output_file_path: string default "~/abc_result.txt"
+    param output_file_path: string default "~/abc_result.txt"
     var result: float
     inputs result
 
