@@ -16,8 +16,8 @@ from process_bigraph import Composite
 from simple_process_bigraph_runtime.generation.type_generator import register_types, collect_types
 from simple_process_bigraph_runtime.generation.unit_generator import register_units, collect_units
 from simple_process_bigraph_runtime.generation.composite_generator import process_composite
-from simple_process_bigraph_runtime.registry.spatio_flux_library import apply_to_vivarium as register_spatio_flux_library
-from simple_process_bigraph_runtime.registry.toy_library import apply_to_vivarium as register_toy_library
+import simple_process_bigraph_runtime.registry.spatio_flux_library as spatioflux
+import simple_process_bigraph_runtime.registry.toy_library as toy
 from bigraph_viz import plot_bigraph
 
 plot_settings = {
@@ -74,8 +74,8 @@ def validate_pb_absolute_path(absolute_path: str) -> str:
 
 def performConversion(ast_model: Model) -> tuple[Composite, dict, ProcessTypes]:
     assembler = Vivarium()
-    register_spatio_flux_library(assembler)
-    register_toy_library(assembler)
+    spatioflux.apply_to_vivarium(assembler)
+    toy.apply_to_vivarium(assembler)
     register_types(assembler, collect_types(ast_model))
     register_units(assembler, collect_units(ast_model))
     process_composite(ast_model, assembler)

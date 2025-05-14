@@ -2,6 +2,7 @@ import warnings
 
 from process_bigraph_lang.dsl.model import Model, Type
 from vivarium import Vivarium
+
 with warnings.catch_warnings(): # Temporary minimal_impact bug in process_bigraphs
     warnings.simplefilter("ignore", SyntaxWarning)
     #warnings.filterwarnings("error", category=SyntaxWarning)
@@ -13,6 +14,7 @@ def collect_types(model: Model) -> list[Type]:
         # Insert some parsing code here
         types_to_process.append(type_to_add)
     return types_to_process
+
 
 def register_types(assembler: Vivarium, types_to_register: list[Type]):
     for type_to_register in types_to_register:
