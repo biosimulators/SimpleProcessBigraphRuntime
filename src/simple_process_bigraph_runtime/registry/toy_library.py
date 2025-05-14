@@ -60,7 +60,7 @@ class SaveFloatToFile(Step):
         }
 
     def update(self, state):
-        with open(os.path.expanduser("~/Documents/pb_output_dir/output_value.txt"), "w+") as f:
+        with open(os.path.expanduser(self.config["output_file_path"]), "w+") as f:
             f.write(str(state["result"]))
 
 class SaveFloatToFileRepeatedly(Process):
@@ -71,7 +71,7 @@ class SaveFloatToFileRepeatedly(Process):
 
     def update(self, state, interval):
         value = str(state["result"])
-        with open(os.path.expanduser("~/Documents/pb_output_dir/output_value.txt"), "w+") as f:
+        with open(os.path.expanduser(self.config["output_file_path"]), "w+") as f:
             f.write(value)
 
 class AddComplexNumbers(Step):

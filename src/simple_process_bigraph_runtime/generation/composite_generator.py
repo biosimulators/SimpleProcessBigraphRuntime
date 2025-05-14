@@ -63,10 +63,11 @@ def process_composite(model: Model, assembler: Vivarium):
                     if 0 == len(out_binding):
                         for token in map_key.split("::"):
                             out_binding.append(token)
+            config = {p.name: p.default.val for p in process_def_actual.params}
             assembler.add_process(
                 name=process.name,
                 process_id=".".join(process_def_actual.python_path.path),
-                # config=config,
+                config=config,
                 inputs=input_bindings,
                 outputs=output_bindings,
             )
