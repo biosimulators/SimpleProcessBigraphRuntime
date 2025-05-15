@@ -7,7 +7,7 @@ authors = [
 ]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.10, <4.0"
+requires-python = ">=3.11, <4.0"
 packages = [
     {include = "simple_process_bigraph_runtime"},
     {include = "tests"}
@@ -17,8 +17,7 @@ dependencies = [
     "typer (>=0.15.3, <1.0)",
 #    "process-bigraph-lang @ git+https://github.com/biosimulations/process-bigraph-lang.git#bind-to-object",
     "process-bigraph-lang @ ../process-bigraph-lang",
-    "spatio-flux @ git+https://github.com/vivarium-collective/spatio-flux.git",
-    "vivarium-interface (>=0.0.5,<0.0.6)"
+    "spatio-flux @ git+https://github.com/vivarium-collective/spatio-flux.git"
 ]
 
 [tool.poetry]
@@ -30,6 +29,7 @@ deptry = "^0.23.0"
 mypy = "^1.15.0"
 pre-commit = "^4.2.0"
 tox = "^4.25.0"
+ipython = "^9.2.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -3,7 +3,6 @@ from typing import override, Any
 
 from process_bigraph import Process, Step  # type: ignore[import-untyped]
 from process_bigraph.composite import SyncUpdate  # type: ignore[import-untyped]
-from vivarium import Vivarium  # type: ignore[import-untyped]
 
 from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
 

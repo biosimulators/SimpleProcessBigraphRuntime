@@ -2,7 +2,6 @@ import tempfile
 from pathlib import Path
 
 from process_bigraph_lang.dsl.model import Model, ProcessDef
-from vivarium import Vivarium  # type: ignore[import-untyped]
 
 import simple_process_bigraph_runtime.registry.toy_library as toy
 from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
