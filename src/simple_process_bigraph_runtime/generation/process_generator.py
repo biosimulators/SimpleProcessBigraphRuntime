@@ -1,17 +1,12 @@
-import warnings
+from process_bigraph_lang.dsl.model import ProcessDef
 from vivarium import Vivarium
-from process_bigraph_lang.dsl.model import Model
-with warnings.catch_warnings(): # Temporary minimal_impact bug in process_bigraphs
-    warnings.simplefilter("ignore", SyntaxWarning)
-    #warnings.filterwarnings("error", category=SyntaxWarning)
-    from process_bigraph import ProcessTypes, Process
 
 
-def register_process_defs(assembler: Vivarium, model: Model) -> None:
+def register_process_defs(assembler: Vivarium, process_defs: list[ProcessDef]) -> None:
     # note: does not actually dynamically build processes...yet
     registry = assembler.core
-    for process_def in model.processDefs:
-        if registry.process_registry.find(process_def.name) is not None:
-            continue
-        raise ValueError(f"Unknown process definition {process_def.name}")
+    for process_def in process_defs:
+        python_path = ".".join(process_def.python_path.path)
+        if not registry.process_registry.find(python_path):
+            raise ValueError(f"Unknown process definition {process_def.name}")
 

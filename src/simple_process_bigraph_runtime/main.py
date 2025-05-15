@@ -5,6 +5,9 @@ import warnings
 import typer
 from process_bigraph_lang.dsl.model import Model
 from typing_extensions import Annotated
+
+from simple_process_bigraph_runtime.generation.process_generator import register_process_defs
+
 with warnings.catch_warnings(): # Temporary minimal_impact bug in process_bigraphs
     warnings.simplefilter("ignore", SyntaxWarning)
     #warnings.filterwarnings("error", category=SyntaxWarning)
@@ -13,8 +16,8 @@ from simple_process_bigraph_runtime import dsl_adapter
 from vivarium import Vivarium
 from process_bigraph import Composite
 
-from simple_process_bigraph_runtime.generation.type_generator import register_types, collect_types
-from simple_process_bigraph_runtime.generation.unit_generator import register_units, collect_units
+from simple_process_bigraph_runtime.generation.type_generator import register_types
+from simple_process_bigraph_runtime.generation.unit_generator import register_units
 from simple_process_bigraph_runtime.generation.composite_generator import process_composite
 import simple_process_bigraph_runtime.registry.spatio_flux_library as spatioflux
 import simple_process_bigraph_runtime.registry.toy_library as toy
@@ -76,8 +79,9 @@ def performConversion(ast_model: Model) -> tuple[Composite, dict, ProcessTypes]:
     assembler = Vivarium()
     spatioflux.apply_to_vivarium(assembler)
     toy.apply_to_vivarium(assembler)
-    register_types(assembler, collect_types(ast_model))
-    register_units(assembler, collect_units(ast_model))
+    register_types(assembler, ast_model.types)
+    register_units(assembler, ast_model.units)
+    register_process_defs(assembler, ast_model.processDefs)
     process_composite(ast_model, assembler)
 
     return assembler.composite, assembler.make_document(), assembler.core

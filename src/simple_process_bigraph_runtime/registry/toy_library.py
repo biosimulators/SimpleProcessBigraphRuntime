@@ -1,6 +1,6 @@
 import os.path
-from typing import Any
-from process_bigraph import Process, Step, Composite, ProcessTypes, pp
+
+from process_bigraph import Process, Step
 from vivarium import Vivarium
 
 complex_number = {

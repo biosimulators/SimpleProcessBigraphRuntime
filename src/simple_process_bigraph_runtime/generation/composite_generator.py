@@ -1,6 +1,6 @@
 from typing import Any, cast
 
-from process_bigraph_lang.dsl.model import Model, StoreDef, ProcessDef, Reference, Store
+from process_bigraph_lang.dsl.model import Model, StoreDef, ProcessDef, Store, Type
 from vivarium import Vivarium
 
 
@@ -17,7 +17,11 @@ def process_composite(model: Model, assembler: Vivarium):
 
             process_config = {}
             for param in process_def.params:
-                process_config[param.name] = param.default.val if param.default is not None else determine_builtin_default(param.type.ref_text)
+                param_type = cast(Type, param.type.ref_object)
+                assert isinstance(param_type, Type)
+                process_config[param.name] = param.default.val \
+                    if param.default is not None \
+                    else _determine_builtin_default(param_type)
 
             for store_ref in process.stores:
                 store = cast(Store, store_ref.ref_object)
@@ -29,7 +33,11 @@ def process_composite(model: Model, assembler: Vivarium):
                 store_path = [composite_def.name, store.name]
 
                 for state_def in store_def.states:
-                    store_path_to_value_map[store_path_str] = state_def.default.val if state_def.default is not None else determine_builtin_default(state_def.type.ref_text)
+                    state_type = cast(Type, state_def.type.ref_object)
+                    assert isinstance(state_type, Type)
+                    store_path_to_value_map[store_path_str] = state_def.default.val \
+                        if state_def.default is not None \
+                        else _determine_builtin_default(state_type)
 
                 for state_def in store_def.states:
                     if state_def.name in input_bindings:
@@ -51,10 +59,11 @@ def process_composite(model: Model, assembler: Vivarium):
 
     assembler.add_emitter()
 
-def determine_builtin_default(type_to_infer: str):
-    if type_to_infer == "float":
+
+def _determine_builtin_default(type_to_infer: Type):
+    if type_to_infer.name == "float":
         return 0.0
-    elif type_to_infer == "int":
+    elif type_to_infer.name == "int":
         return 0
     else:
         raise ValueError(f"Unknown built-in default for type `{type_to_infer}`")
