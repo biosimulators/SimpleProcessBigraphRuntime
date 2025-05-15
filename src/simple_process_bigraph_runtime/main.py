@@ -53,8 +53,6 @@ def playground():
     pass
 
 def generatePythonModel(pblang_path: os.PathLike[str]) -> Model:
-    absolute_path: str = validate_pb_absolute_path(os.path.abspath(pblang_path))
-
     return dsl_adapter.generateModelAst(pblang_path)
 
 def validate_pb_absolute_path(absolute_path: str) -> str:

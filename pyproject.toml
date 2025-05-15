@@ -15,8 +15,8 @@ packages = [
 dependencies = [
     "process-bigraph (>=0.0.35, <1.0)",
     "typer (>=0.15.3, <1.0)",
-#    "process-bigraph-lang @ git+https://github.com/biosimulations/process-bigraph-lang.git#bind-to-object",
-    "process-bigraph-lang @ ../process-bigraph-lang",
+    "process-bigraph-lang @ git+https://github.com/biosimulations/process-bigraph-lang.git#bind-to-object",
+#    "process-bigraph-lang @ ../process-bigraph-lang",
     "spatio-flux @ git+https://github.com/vivarium-collective/spatio-flux.git"
 ]
 
