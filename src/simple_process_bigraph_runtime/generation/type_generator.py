@@ -1,5 +1,5 @@
 from process_bigraph_lang.dsl.model import Type
-from vivarium import Vivarium
+from vivarium import Vivarium  # type: ignore[import-untyped]
 
 
 def register_types(assembler: Vivarium, types_to_register: list[Type]):

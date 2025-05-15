@@ -1,7 +1,7 @@
 from typing import Any, cast
 
 from process_bigraph_lang.dsl.model import Model, StoreDef, ProcessDef, Store, Type
-from vivarium import Vivarium
+from vivarium import Vivarium  # type: ignore[import-untyped]
 
 
 def process_composite(model: Model, assembler: Vivarium):
@@ -32,18 +32,22 @@ def process_composite(model: Model, assembler: Vivarium):
                 store_path_str: str = composite_def.name + "::" + store.name
                 store_path = [composite_def.name, store.name]
 
-                for state_def in store_def.states:
-                    state_type = cast(Type, state_def.type.ref_object)
-                    assert isinstance(state_type, Type)
-                    store_path_to_value_map[store_path_str] = state_def.default.val \
-                        if state_def.default is not None \
-                        else _determine_builtin_default(state_type)
+                if store_def.states:
+                    for state_def in store_def.states:
+                        state_type = cast(Type, state_def.type.ref_object)
+                        assert isinstance(state_type, Type)
+                        store_path_to_value_map[store_path_str] = state_def.default.val \
+                            if state_def.default is not None \
+                            else _determine_builtin_default(state_type)
 
-                for state_def in store_def.states:
-                    if state_def.name in input_bindings:
-                        input_bindings[state_def.name] = store_path
-                    if state_def.name in output_bindings:
-                        output_bindings[state_def.name] = store_path
+                    for state_def in store_def.states:
+                        if state_def.name in input_bindings:
+                            input_bindings[state_def.name] = store_path
+                        if state_def.name in output_bindings:
+                            output_bindings[state_def.name] = store_path
+
+            if not process_def.python_path:
+                raise ValueError(f"Process definition {process_def.name} has no python path")
 
             assembler.add_process(
                 name=process.name,

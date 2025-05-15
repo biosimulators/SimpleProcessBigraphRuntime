@@ -1,7 +1,7 @@
 import os.path
 
-from process_bigraph import Process, Step
-from vivarium import Vivarium
+from process_bigraph import Process, Step  # type: ignore[import-untyped]
+from vivarium import Vivarium  # type: ignore[import-untyped]
 
 complex_number = {
     "real" : "float",

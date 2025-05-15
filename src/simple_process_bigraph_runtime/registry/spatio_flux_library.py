@@ -1,8 +1,7 @@
-from typing import Any
-from process_bigraph import Process, Composite, ProcessTypes, pp
-from bigraph_schema import default
-from vivarium import Vivarium
-from spatio_flux import processes
+from bigraph_schema import default  # type: ignore[import-untyped]
+from spatio_flux import processes  # type: ignore[import-untyped]
+from vivarium import Vivarium  # type: ignore[import-untyped]
+
 
 def apply_non_negative(schema, current, update, top_schema, top_state, path, core):
     new_value = current + update

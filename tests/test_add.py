@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from process_bigraph_lang.dsl.model import Model, ProcessDef
-from vivarium import Vivarium
+from vivarium import Vivarium  # type: ignore[import-untyped]
 
 import simple_process_bigraph_runtime.registry.toy_library as toy
 from simple_process_bigraph_runtime.generation.composite_generator import process_composite
@@ -31,11 +31,13 @@ def test_add(model_path_abc: Path) -> None:
     print(core)
 
     add_num: ProcessDef = ast_model.processDefs[0]
+    assert add_num.python_path
     assert ".".join(add_num.python_path.path) == 'toy.AddFloatsRepeatedly'
     assert ".".join(add_num.python_path.path) in core.process_registry.registry
 
     print(core.process_registry.registry)
 
     print_results: ProcessDef = ast_model.processDefs[1]
+    assert print_results.python_path
     assert ".".join(print_results.python_path.path) == 'toy.SaveFloatToFile'
     assert ".".join(print_results.python_path.path) in core.process_registry.registry

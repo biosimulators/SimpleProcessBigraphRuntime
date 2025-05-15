@@ -1,29 +1,23 @@
-import sys
 import os
-import warnings
+import sys
+from pathlib import Path
 
 import typer
+from bigraph_viz import plot_bigraph  # type: ignore[import-untyped]
+from process_bigraph import Composite, ProcessTypes  # type: ignore[import-untyped]
 from process_bigraph_lang.dsl.model import Model
 from typing_extensions import Annotated
+from vivarium import Vivarium  # type: ignore[import-untyped]
 
-from simple_process_bigraph_runtime.generation.process_generator import register_process_defs
-
-with warnings.catch_warnings(): # Temporary minimal_impact bug in process_bigraphs
-    warnings.simplefilter("ignore", SyntaxWarning)
-    #warnings.filterwarnings("error", category=SyntaxWarning)
-    from process_bigraph import ProcessTypes
-from simple_process_bigraph_runtime import dsl_adapter
-from vivarium import Vivarium
-from process_bigraph import Composite
-
-from simple_process_bigraph_runtime.generation.type_generator import register_types
-from simple_process_bigraph_runtime.generation.unit_generator import register_units
-from simple_process_bigraph_runtime.generation.composite_generator import process_composite
 import simple_process_bigraph_runtime.registry.spatio_flux_library as spatioflux
 import simple_process_bigraph_runtime.registry.toy_library as toy
-from bigraph_viz import plot_bigraph
+from simple_process_bigraph_runtime import dsl_adapter
+from simple_process_bigraph_runtime.generation.composite_generator import process_composite
+from simple_process_bigraph_runtime.generation.process_generator import register_process_defs
+from simple_process_bigraph_runtime.generation.type_generator import register_types
+from simple_process_bigraph_runtime.generation.unit_generator import register_units
 
-plot_settings = {
+plot_settings: dict[str, str | bool] = {
     'remove_process_place_edges': True
 }
 save_images = True
@@ -37,7 +31,7 @@ app = typer.Typer()
 
 @app.command()
 def validate(pblang_path: Annotated[str, typer.Argument(help="Path to the pblang file to validate")]):
-    ast_model: Model = generatePythonModel(pblang_path)
+    ast_model: Model = generatePythonModel(Path(pblang_path))
     _, pb_doc, pb_core = performConversion(ast_model)
     plot_bigraph(state=pb_doc['state'], schema=pb_doc['composition'],
                  core=pb_core,
@@ -48,7 +42,7 @@ def validate(pblang_path: Annotated[str, typer.Argument(help="Path to the pblang
 
 @app.command()
 def execute(duration: float, pblang_path: Annotated[str, typer.Argument(help="Path to the pblang file to validate")]):
-    ast_model: Model = generatePythonModel(pblang_path)
+    ast_model: Model = generatePythonModel(Path(pblang_path))
     pb_composite, _0, _1 = performConversion(ast_model)
 
     pb_composite.run(duration)

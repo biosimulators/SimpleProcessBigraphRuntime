@@ -1,5 +1,5 @@
 from process_bigraph_lang.dsl.model import Unit
-from vivarium import Vivarium
+from vivarium import Vivarium  # type: ignore[import-untyped]
 
 def register_units(assembler: Vivarium, units_to_register: list[Unit]) -> None:
     for unit_to_register in units_to_register:
