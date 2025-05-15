@@ -1,6 +1,5 @@
 from bigraph_schema import default  # type: ignore[import-untyped]
 from spatio_flux import processes  # type: ignore[import-untyped]
-from vivarium import Vivarium  # type: ignore[import-untyped]
 
 from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
 

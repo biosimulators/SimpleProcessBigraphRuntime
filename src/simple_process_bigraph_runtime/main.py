@@ -7,7 +7,6 @@ from bigraph_viz import plot_bigraph  # type: ignore[import-untyped]
 from process_bigraph import Composite, ProcessTypes  # type: ignore[import-untyped]
 from process_bigraph_lang.dsl.model import Model
 from typing_extensions import Annotated
-from vivarium import Vivarium  # type: ignore[import-untyped]
 
 import simple_process_bigraph_runtime.registry.spatio_flux_library as spatioflux
 import simple_process_bigraph_runtime.registry.toy_library as toy
@@ -54,8 +53,6 @@ def playground():
     pass
 
 def generatePythonModel(pblang_path: os.PathLike[str]) -> Model:
-    absolute_path: str = validate_pb_absolute_path(os.path.abspath(pblang_path))
-
     return dsl_adapter.generateModelAst(pblang_path)
 
 def validate_pb_absolute_path(absolute_path: str) -> str:
