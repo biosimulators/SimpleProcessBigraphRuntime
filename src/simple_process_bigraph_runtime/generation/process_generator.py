@@ -1,11 +1,11 @@
 from process_bigraph_lang.dsl.model import ProcessDef
-from vivarium import Vivarium  # type: ignore[import-untyped]
-from vivarium.vivarium import VivariumTypes  # type: ignore[import-untyped]
+
+from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
 
 
-def register_process_defs(assembler: Vivarium, process_defs: list[ProcessDef]) -> None:
+def register_process_defs(assembler: ProcessBigraphEnv, process_defs: list[ProcessDef]) -> None:
     # note: does not actually dynamically build processes...yet
-    registry: VivariumTypes = assembler.core
+    registry = assembler.core
     for process_def in process_defs:
         if not process_def.python_path:
             raise ValueError(f"Process definition {process_def.name} has no python path")

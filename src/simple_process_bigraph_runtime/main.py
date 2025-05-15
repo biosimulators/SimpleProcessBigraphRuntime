@@ -12,6 +12,7 @@ from vivarium import Vivarium  # type: ignore[import-untyped]
 import simple_process_bigraph_runtime.registry.spatio_flux_library as spatioflux
 import simple_process_bigraph_runtime.registry.toy_library as toy
 from simple_process_bigraph_runtime import dsl_adapter
+from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
 from simple_process_bigraph_runtime.generation.composite_generator import process_composite
 from simple_process_bigraph_runtime.generation.process_generator import register_process_defs
 from simple_process_bigraph_runtime.generation.type_generator import register_types
@@ -70,9 +71,13 @@ def validate_pb_absolute_path(absolute_path: str) -> str:
     return absolute_path
 
 def performConversion(ast_model: Model) -> tuple[Composite, dict, ProcessTypes]:
-    assembler = Vivarium()
-    spatioflux.apply_to_vivarium(assembler)
-    toy.apply_to_vivarium(assembler)
+    assembler = ProcessBigraphEnv()
+
+    # register the libraries
+    spatioflux.register(assembler)
+    toy.register(assembler)
+
+    # register the types, units, and process definitions from the model
     register_types(assembler, ast_model.types)
     register_units(assembler, ast_model.units)
     register_process_defs(assembler, ast_model.processDefs)

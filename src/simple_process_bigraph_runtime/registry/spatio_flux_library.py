@@ -2,6 +2,8 @@ from bigraph_schema import default  # type: ignore[import-untyped]
 from spatio_flux import processes  # type: ignore[import-untyped]
 from vivarium import Vivarium  # type: ignore[import-untyped]
 
+from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
+
 
 def apply_non_negative(schema, current, update, top_schema, top_state, path, core):
     new_value = current + update
@@ -48,8 +50,8 @@ TYPES_DICT = {
 
 PROCESS_DICT = processes.PROCESS_DICT.copy()
 
-def apply_to_vivarium(vivarium: Vivarium) -> None:
+def register(assembler: ProcessBigraphEnv) -> None:
     for type_name, type_schema in TYPES_DICT.items():
-        vivarium.core.register(type_name, type_schema)
+        assembler.core.register(type_name, type_schema)
     for process_name, process in PROCESS_DICT.items():
-        vivarium.core.register_process(process_name, process)
+        assembler.core.register_process(process_name, process)

@@ -1,7 +1,11 @@
 import os.path
+from typing import override, Any
 
 from process_bigraph import Process, Step  # type: ignore[import-untyped]
+from process_bigraph.composite import SyncUpdate  # type: ignore[import-untyped]
 from vivarium import Vivarium  # type: ignore[import-untyped]
+
+from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
 
 complex_number = {
     "real" : "float",
@@ -12,19 +16,56 @@ TYPES_DICT = {
     "complex_number": complex_number,
 }
 
-class AddFloats(Step):
-    def inputs(self):
+class TypedStep(Step):
+    def __init__(self, config=None, core=None):
+        super().__init__(config, core)
+
+    def inputs(self) -> dict[str, Any]:
+        return {}
+
+    def outputs(self) -> dict[str, Any]:
+        return {}
+
+    def invoke(self, state: dict[str, Any], _=None) -> SyncUpdate:
+        return super().invoke(state)
+
+    def update(self, inputs: dict[str, Any]) -> dict[str, Any]:
+        raise NotImplementedError("Subclasses should implement this method.")
+
+
+class TypedProcess(Process):
+    def __init__(self, config=None, core=None):
+        super().__init__(config, core)
+
+    def inputs(self) -> dict[str, Any]:
+        return {}
+
+    def outputs(self) -> dict[str, Any]:
+        return {}
+
+    def invoke(self, state: dict[str, Any], interval: float) -> SyncUpdate:
+        return super().invoke(state, interval)
+
+    def update(self, inputs: dict[str, Any], interval: float) -> dict[str, Any]:
+        raise NotImplementedError("Subclasses should implement this method.")
+
+
+class AddFloatsStep(TypedStep):
+    @override
+    def inputs(self) -> dict[str, Any]:
         return {
             "left_hand_addend": "float",
             "right_hand_addend": "float"
         }
 
-    def outputs(self):
+    @override
+    def outputs(self) -> dict[str, Any]:
         return {
             "result": "float"
         }
 
-    def update(self, inputs):
+    @override
+    def update(self, inputs) -> dict[str, Any]:
         left_hand_addend: float = inputs["left_hand_addend"]
         right_hand_addend: float = inputs["right_hand_addend"]
         result = left_hand_addend + right_hand_addend
@@ -32,19 +73,23 @@ class AddFloats(Step):
             "result": result
         }
 
-class AddFloatsRepeatedly(Process):
-    def inputs(self):
+
+class AddFloatsProcess(TypedProcess):
+    @override
+    def inputs(self) -> dict[str, Any]:
         return {
             "left_hand_addend": "float",
             "right_hand_addend": "float"
         }
 
-    def outputs(self):
+    @override
+    def outputs(self) -> dict[str, Any]:
         return {
             "result": "float"
         }
 
-    def update(self, inputs, interval):
+    @override
+    def update(self, inputs, interval) -> dict[str, Any]:
         left_hand_addend: float = inputs["left_hand_addend"]
         right_hand_addend: float = inputs["right_hand_addend"]
         result = left_hand_addend + right_hand_addend
@@ -52,57 +97,62 @@ class AddFloatsRepeatedly(Process):
             "result": result
         }
 
-class SaveFloatToFile(Step):
 
-    def inputs(self):
+class SaveFloatToFileStep(TypedStep):
+
+    @override
+    def inputs(self) -> dict[str, Any]:
         return {
             "result": "float",
         }
 
+    @override
     def update(self, state):
         with open(os.path.expanduser(self.config["output_file_path"]), "w+") as f:
             f.write(str(state["result"]))
 
-class SaveFloatToFileRepeatedly(Process):
-    def inputs(self):
-        return {
-            "result": "float",
-        }
 
-    def update(self, state, interval):
-        value = str(state["result"])
-        with open(os.path.expanduser(self.config["output_file_path"]), "w+") as f:
-            f.write(value)
-
-class AddComplexNumbers(Step):
-    def inputs(self):
+class AddComplexNumbersStep(TypedStep):
+    @override
+    def inputs(self) -> dict[str, Any]:
         return {
             "left_hand_addend": "complex_number",
             "right_hand_addend": "complex_number"
         }
 
-    def update(self, inputs):
+    @override
+    def outputs(self) -> dict[str, Any]:
+        return {
+            "result": "complex_number"
+        }
+
+    @override
+    def update(self, inputs) -> dict[str, Any]:
         result = {}
-        left_hand_addend: complex_number = inputs["left_hand_addend"]
-        right_hand_addend: complex_number = inputs["right_hand_addend"]
+        left_hand_addend = inputs["left_hand_addend"]
+        right_hand_addend = inputs["right_hand_addend"]
         result["real"] = left_hand_addend["real"] + right_hand_addend["real"]
         result["imag"] = left_hand_addend["imag"] + right_hand_addend["imag"]
+        return {
+            "result": result
+        }
 
 
-class GetRealFromComplexNumber(Step):
+class GetRealFromComplexNumberStep(TypedStep):
     pass
 
+
 PROCESS_DICT = {
-    "AddFloats" : AddFloats,
-    "AddFloatsRepeatedly": AddFloatsRepeatedly,
-    "SaveFloatToFile" : SaveFloatToFile,
-    "SaveFloatToFileRepeatedly": SaveFloatToFileRepeatedly,
-    "AddComplexNumbers" : AddComplexNumbers,
-    "GetRealFromComplexNumber" : GetRealFromComplexNumber
+    "AddFloatsStep" : AddFloatsStep,
+    "AddFloatsProcess": AddFloatsProcess,
+    "SaveFloatToFileStep" : SaveFloatToFileStep,
+    "AddComplexNumbersStep" : AddComplexNumbersStep,
+    "GetRealFromComplexNumberStep" : GetRealFromComplexNumberStep
 }
 
-def apply_to_vivarium(vivarium: Vivarium) -> None:
+
+def register(assembler: ProcessBigraphEnv) -> None:
     for type_name, type_schema in TYPES_DICT.items():
-        vivarium.core.register("toy.type." + type_name, type_schema)
+        assembler.core.register("toy.type." + type_name, type_schema)
     for process_name, process in PROCESS_DICT.items():
-        vivarium.core.register_process("toy." + process_name, process)
+        assembler.core.register_process("toy." + process_name, process)

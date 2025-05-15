@@ -1,7 +1,8 @@
 from process_bigraph_lang.dsl.model import Unit
-from vivarium import Vivarium  # type: ignore[import-untyped]
+from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
 
-def register_units(assembler: Vivarium, units_to_register: list[Unit]) -> None:
+
+def register_units(assembler: ProcessBigraphEnv, units_to_register: list[Unit]) -> None:
     for unit_to_register in units_to_register:
         pass
         # if 0 == assembler.get_type(unit_to_register.name).size:

@@ -2,14 +2,14 @@
 type float builtin
 type string builtin
 
-process_def add_nums path toy.AddFloatsRepeatedly
+process_def add_nums path toy.AddFloatsProcess
     var left_hand_addend: float
     var right_hand_addend: float
     var result: float
     inputs left_hand_addend right_hand_addend
     outputs result
 
-process_def print_result path toy.SaveFloatToFile
+process_def print_result path toy.SaveFloatToFileStep
     param output_file_path: string default "~/abc_result.txt"
     var result: float
     inputs result

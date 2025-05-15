@@ -1,10 +1,11 @@
 from typing import Any, cast
 
 from process_bigraph_lang.dsl.model import Model, StoreDef, ProcessDef, Store, Type
-from vivarium import Vivarium  # type: ignore[import-untyped]
+from simple_process_bigraph_runtime.environment.process_bigraph_env import ProcessBigraphEnv
 
 
-def process_composite(model: Model, assembler: Vivarium):
+
+def process_composite(model: Model, assembler: ProcessBigraphEnv):
     for composite_def in model.compositeDefs:
 
         store_path_to_value_map: dict[str, Any] = {}
@@ -49,13 +50,27 @@ def process_composite(model: Model, assembler: Vivarium):
             if not process_def.python_path:
                 raise ValueError(f"Process definition {process_def.name} has no python path")
 
-            assembler.add_process(
-                name=process.name,
-                process_id=".".join(process_def.python_path.path),
-                config=process_config,
-                inputs=input_bindings,
-                outputs=output_bindings,
-            )
+            process_store_path = ()
+            if process_def.python_path.path[-1].endswith("Step"):
+                assembler.add_step(
+                    name=process.name,
+                    process_id=".".join(process_def.python_path.path),
+                    config=process_config,
+                    inputs=input_bindings,
+                    outputs=output_bindings,
+                    path=process_store_path
+                )
+            elif process_def.python_path.path[-1].endswith("Process"):
+                assembler.add_process(
+                    name=process.name,
+                    process_id=".".join(process_def.python_path.path),
+                    config=process_config,
+                    inputs=input_bindings,
+                    outputs=output_bindings,
+                    path=process_store_path
+                )
+            else:
+                raise ValueError(f"Process definition {process_def.name} has an invalid python path, expecting to end with Step or Process")
 
         for store_path_str in store_path_to_value_map:
             store_path = store_path_str.split("::")
